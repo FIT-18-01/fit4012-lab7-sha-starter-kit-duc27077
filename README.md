@@ -92,6 +92,29 @@ printf "FIT4012 SHA sample\n" > sample.txt
 ./sha256 --hash-file sample.txt
 ```
 
+Ví dụ băm mật khẩu và kiểm tra mật khẩu:
+
+```bash
+./password_hash register password.hash
+./password_hash verify password.hash
+```
+
+Ví dụ băm mật khẩu có salt:
+
+```bash
+./salted_password_hash register salted_password.hash
+./salted_password_hash verify salted_password.hash
+```
+
+Trong trường hợp muốn tự động hóa hoặc test, chương trình cũng hỗ trợ truyền mật khẩu trực tiếp:
+
+```bash
+./password_hash register "my-secret" password.hash
+./password_hash verify "my-secret" password.hash
+./salted_password_hash register "my-secret" salted_password.hash
+./salted_password_hash verify "my-secret" salted_password.hash
+```
+
 ## 4. Output / Đầu ra
 
 - `sha256` in giá trị SHA-256 dạng hexa 64 ký tự.

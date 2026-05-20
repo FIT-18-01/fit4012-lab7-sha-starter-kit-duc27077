@@ -23,8 +23,8 @@ fi
 
 echo "== 4. Password hash =="
 ./password_hash register "fit4012-demo-password" test_password.hash
-./password_hash login "fit4012-demo-password" test_password.hash
-if ./password_hash login "wrong-password" test_password.hash; then
+./password_hash verify "fit4012-demo-password" test_password.hash
+if ./password_hash verify "wrong-password" test_password.hash; then
   echo "[FAIL] Wrong password should fail"
   exit 1
 else
@@ -34,7 +34,7 @@ fi
 echo "== 5. Salted password hash =="
 ./salted_password_hash register "fit4012-demo-password" test_password_salted_1.hash
 ./salted_password_hash register "fit4012-demo-password" test_password_salted_2.hash
-./salted_password_hash login "fit4012-demo-password" test_password_salted_1.hash
+./salted_password_hash verify "fit4012-demo-password" test_password_salted_1.hash
 if cmp -s test_password_salted_1.hash test_password_salted_2.hash; then
   echo "[FAIL] Same password should produce different salted records"
   exit 1

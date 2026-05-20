@@ -10,12 +10,27 @@ constexpr const char* DEFAULT_PASSWORD_FILE = "password.hash";
 
 void print_usage(const char* program_name) {
     std::cout << "Usage:\n"
-              << "  " << program_name << " register <password> [password_file]\n"
-              << "  " << program_name << " login <password> [password_file]\n";
+              << "  " << program_name << " register <password_file>\n"
+              << "  " << program_name << " verify <password_file>\n"
+              << "  " << program_name << " login <password_file>\n"
+              << "  " << program_name << " register <password> <password_file>\n"
+              << "  " << program_name << " verify <password> <password_file>\n"
+              << "  " << program_name << " login <password> <password_file>\n";
+}
+
+std::string prompt_password(const std::string& prompt) {
+    std::cout << prompt;
+    std::string password;
+    std::getline(std::cin, password);
+    return password;
 }
 
 std::string choose_file(int argc, char* argv[]) {
-    return (argc >= 4) ? std::string(argv[3]) : std::string(DEFAULT_PASSWORD_FILE);
+    return (argc == 4) ? std::string(argv[3]) : std::string(argv[2]);
+}
+
+bool is_verify_mode(const std::string& mode) {
+    return mode == "verify" || mode == "login";
 }
 
 } // namespace
@@ -28,8 +43,10 @@ int main(int argc, char* argv[]) {
         }
 
         const std::string mode = argv[1];
-        const std::string password = argv[2];
         const std::string password_file = choose_file(argc, argv);
+        const std::string password = (argc == 4)
+            ? std::string(argv[2])
+            : prompt_password("Enter password: ");
 
         if (mode == "register") {
             const std::string hash = sha256::calculate_sha256_string(password);
@@ -42,7 +59,7 @@ int main(int argc, char* argv[]) {
             return 0;
         }
 
-        if (mode == "login") {
+        if (is_verify_mode(mode)) {
             std::ifstream input(password_file);
             if (!input) {
                 throw std::runtime_error("Cannot read password file: " + password_file);
@@ -53,11 +70,11 @@ int main(int argc, char* argv[]) {
             const std::string current_hash = sha256::calculate_sha256_string(password);
 
             if (stored_hash == current_hash) {
-                std::cout << "[PASS] Login success\n";
+                std::cout << "[PASS] Password verified\n";
                 return 0;
             }
 
-            std::cout << "[FAIL] Login failed: wrong password\n";
+            std::cout << "[FAIL] Password verification failed: wrong password\n";
             return 1;
         }
 

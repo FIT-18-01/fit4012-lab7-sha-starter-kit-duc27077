@@ -20,13 +20,13 @@ if cmp -s "$HASH_FILE_1" "$HASH_FILE_2"; then
   exit 1
 fi
 
-./salted_password_hash login "same-password" "$HASH_FILE_1" >/dev/null || {
-  echo "[FAIL] Correct password should login successfully with saved salt"
+./salted_password_hash verify "same-password" "$HASH_FILE_1" >/dev/null || {
+  echo "[FAIL] Correct password should verify successfully with saved salt"
   exit 1
 }
 
-if ./salted_password_hash login "wrong password / sai mật khẩu" "$HASH_FILE_1" >/dev/null; then
-  echo "[FAIL] Wrong password should be rejected in salted login"
+if ./salted_password_hash verify "wrong password / sai mật khẩu" "$HASH_FILE_1" >/dev/null; then
+  echo "[FAIL] Wrong password should be rejected in salted verify"
   exit 1
 fi
 
